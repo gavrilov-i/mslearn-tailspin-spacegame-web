@@ -11,7 +11,8 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-
+  wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
+  
 steps:
 
 - task: NodeTool@0
@@ -23,7 +24,7 @@ steps:
   inputs:
     verbose: false
 
-- script: npx node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.SpaceGame.Web/wwwroot
+- script: npx node-sass $(wwwrootDir) --output $(wwwrootDir)
   displayName: 'Sass'
 
 - task: gulp@1
@@ -31,7 +32,7 @@ steps:
 
 - script: echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt
   displayName: 'Buildinfo creation'
-  workingDirectory: Tailspin.SpaceGame.Web/wwwroot
+  workingDirectory: $(wwwrootDir)
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
@@ -40,18 +41,18 @@ steps:
     projects: '**/*.csproj'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Build the project - $buildConfiguration'
+  displayName: 'Build the project - $(buildConfiguration)'
   inputs:
     command: 'build'
-    arguments: '--no-restore --configuration $buildConfiguration'
+    arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 - task: DotNetCoreCLI@2
-  displayName: 'Publish the project - $buildConfiguration'
+  displayName: 'Publish the project - $(buildConfiguration)'
   inputs:
     command: 'publish'
     projects: '**/*.csproj'
     publishWebProjects: false
-    arguments: '--no-build --configuration $buildConfiguration --output $(Build.ArtifactStagingDirectory)/$buildConfiguration'
+    arguments: '--no-build --configuration $buildConfiguration --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
     zipAfterPublish: true
 
 - task: PublishBuildArtifacts@1
