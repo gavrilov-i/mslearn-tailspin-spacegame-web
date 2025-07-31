@@ -26,5 +26,8 @@ steps:
 - script: npx node-sass Tailspin.SpaceGame.Web/wwwroot --output Tailspin.SpaceGame.Web/wwwroot
   displayName: 'Sass'
 
+- task: gulp@1
+  displayName: 'Gulp run'
+  
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
