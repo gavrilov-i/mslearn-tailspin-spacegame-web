@@ -18,14 +18,18 @@ steps:
   inputs:
     packageType: sdk
     version: '6.x'
+
 - task: NodeTool@0
   inputs:
     versionSpec: '12.x'
+
 - task: Npm@1
   displayName: 'Run npm install'
   inputs:
     verbose: false
-- script: node-sass Tailspin.SpaceGame.Web/wwwroot
+
+- script: npx node-sass Tailspin.SpaceGame.Web/wwwroot
   displayName: 'Sass'
+
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
