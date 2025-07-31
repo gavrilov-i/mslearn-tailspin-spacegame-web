@@ -28,6 +28,9 @@ steps:
 
 - task: gulp@1
   displayName: 'Gulp run'
-  
+
+- script: echo `date` > Tailspin.SpaceGame.Web/wwwroot/buildinfo.txt
+  displayName: 'Buildinfo creation'
+
 - script: dotnet build --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
