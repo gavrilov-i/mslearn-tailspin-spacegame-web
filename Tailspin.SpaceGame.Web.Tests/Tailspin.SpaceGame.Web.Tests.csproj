@@ -5,7 +5,9 @@
     <IsPackable>false</IsPackable>
     <ProjectGuid>{773BA444-0D67-4F37-8762-17E108CCD5F5}</ProjectGuid>
   </PropertyGroup>
-
+ <ItemGroup>
+    <PackageReference Include="Tailspin.SpaceGame.Web.Models" Version="1.0.0-CI-20250806-124452" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="6.0.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
