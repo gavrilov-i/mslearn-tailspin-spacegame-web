@@ -38,6 +38,7 @@ steps:
   displayName: 'Restore project dependencies'
   inputs:
     command: 'restore'
+    vstsFeed: 'Tailspin.SpaceGame.Web.Models'
     projects: '**/*.csproj'
 
 - template: templates/build.yml
