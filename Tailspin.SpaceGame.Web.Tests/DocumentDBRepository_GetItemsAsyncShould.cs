@@ -16,13 +16,14 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
+            string json;
             using (Stream scoresData = typeof(IDocumentDBRepository<Score>)
                 .Assembly
                 .GetManifestResourceStream("Tailspin.SpaceGame.Web.SampleData.scores.json"))
-                using (StreamReader reader = new StreamReader(scoresData))
-                {
-                    json = reader.ReadToEnd();
-                }
+            using (StreamReader reader = new StreamReader(scoresData))
+            {
+                json = reader.ReadToEnd();
+            }
                 {
                 _scoreRepository = new LocalDocumentDBRepository<Score>(json);
             }
