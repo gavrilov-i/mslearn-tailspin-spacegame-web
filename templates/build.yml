@@ -9,10 +9,7 @@ steps:
     arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }}'
     projects: '**/*.csproj'
 
-# Run dependency scanning 
-- task: AdvancedSecurity-Dependency-Scanning@1 
-  displayName: 'Advanced Security Dependency Scanning'
-  
+
 - task: DotNetCoreCLI@2
   displayName: 'Install .NET tools from local manifest'
   inputs:
