@@ -7,10 +7,11 @@ trigger:
 - "*"
 
 pool:
-  vmImage: ubuntu-latest
+  name: AZ-VM
+  demands:
+    - npm
 
 variables:
-  buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
   
 steps:
