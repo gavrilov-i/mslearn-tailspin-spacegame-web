@@ -17,12 +17,12 @@ steps:
     custom: tool
     arguments: 'restore'
 
-#- task: DotNetCoreCLI@2
-#  displayName: 'Test the project with code coverage - ${{ parameters.buildConfiguration }}'
-#  inputs:
-#    command: 'test'
-#    arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }}  /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura  /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
-#    projects: '**/*.Tests.csproj'
+- task: DotNetCoreCLI@2
+  displayName: 'Test the project with code coverage - ${{ parameters.buildConfiguration }}'
+  inputs:
+    command: 'test'
+    arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }}  /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura  /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/'
+    projects: '**/*.Tests.csproj'
 
 #- task: DotNetCoreCLI@2
 #  displayName: 'Create code coverage report'
