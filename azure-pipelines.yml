@@ -7,7 +7,7 @@ trigger:
 - "*"
 
 pool:
-  name: AZ-VM
+  name: LOCAL
   demands:
     - npm
 
