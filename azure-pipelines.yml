@@ -76,8 +76,9 @@ stages:
           steps:
           - task: DownloadPipelineArtifact@2
             inputs:
-              artifact: drop
-              patterns: |
+              buildType: 'current'
+              artifactName: drop
+              itemPattern: |
                 **/*.zip
                 !**/*.Tests.zip
           - task: AzureWebApp@1
