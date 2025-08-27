@@ -6,50 +6,60 @@
 trigger:
 - "*"
 
-pool:
-  name: LOCAL
-  demands:
-    - npm
-
 variables:
-  wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
+  buildConfiguration: 'Release'
+
+stages:
+- stage: 'Build'
+  displayName: 'Building Application'
+  jobs:
+  - job: 'Build'
+    displayname: 'Build Job'
+
+    pool:
+      name: LOCAL
+      demands:
+        - npm
+
+    variables:
+      wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
   
-steps:
+    steps:
 
-- task: NodeTool@0
-  inputs:
-    versionSpec: '12.x'
+    - task: NodeTool@0
+      inputs:
+      versionSpec: '12.x'
 
-- task: Npm@1
-  displayName: 'Run npm install'
-  inputs:
-    verbose: false
+    - task: Npm@1
+      displayName: 'Run npm install'
+      inputs:
+        verbose: false
 
-- script: npx node-sass $(wwwrootDir) --output $(wwwrootDir)
-  displayName: 'Sass'
+    - script: npx node-sass $(wwwrootDir) --output $(wwwrootDir)
+      displayName: 'Sass'
 
-- task: gulp@1
-  displayName: 'Gulp run'
+    - task: gulp@1
+      displayName: 'Gulp run'
 
-- script: echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt
-  displayName: 'Buildinfo creation'
-  workingDirectory: $(wwwrootDir)
+    - script: echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt
+      displayName: 'Buildinfo creation'
+      workingDirectory: $(wwwrootDir)
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restore project dependencies'
-  inputs:
-    command: 'restore'
-    vstsFeed: 'Tailspin.SpaceGame.Web.Models'
-    projects: '**/*.csproj'
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore project dependencies'
+      inputs:
+        command: 'restore'
+        vstsFeed: 'Tailspin.SpaceGame.Web.Models'
+        projects: '**/*.csproj'
 
-- template: templates/build.yml
-  parameters:
-    buildConfiguration: 'Debug'
+    - template: templates/build.yml
+      parameters:
+        buildConfiguration: 'Debug'
 
-- template: templates/build.yml
-  parameters:
-    buildConfiguration: 'Release'
+    - template: templates/build.yml
+      parameters:
+      buildConfiguration: 'Release'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  condition: succeeded()
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      condition: succeeded()
