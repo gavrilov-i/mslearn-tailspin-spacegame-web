@@ -78,7 +78,7 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: drop
-              itemPattern: |
+              patterns: |
                 drop/**/*.zip
                 !drop/**/*.Tests.zip
           - task: AzureWebApp@1
