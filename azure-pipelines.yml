@@ -80,7 +80,7 @@ stages:
               artifactName: drop
               patterns: |
                 drop/**/*.zip
-                !drop/**/*.Tests.zip
+                ! drop/**/*.Tests.zip
           - task: AzureWebApp@1
             displayName: 'Azure App Service Deploy: website'
             inputs:
