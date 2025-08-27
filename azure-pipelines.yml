@@ -78,7 +78,7 @@ stages:
             inputs:
               buildType: 'current'
               downloadType: 'single'
-              artifactName: drop
+              artifactName: 'drop'
               itemPattern: |
                 **/*.zip
                 !**/*.Tests.zip
