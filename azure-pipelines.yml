@@ -85,6 +85,7 @@ stages:
               downloadType: 'single'
               artifactName: drop
               itemPattern: |
+                !**
                 **/*.zip
                 !**/*.Tests.zip
               cleanDestinationFolder: true
