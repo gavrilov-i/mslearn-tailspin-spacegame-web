@@ -74,9 +74,12 @@ stages:
       runOnce:
         deploy:
           steps:
-          - download: current
-            artifact: drop
-            patterns: |
+          - task: DownloadBuildArtifacts@1
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: drop
+              itemPattern: |
                 **/*.zip
                 !**/*.Tests.zip
           - task: AzureWebApp@1
