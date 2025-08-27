@@ -14,7 +14,7 @@ stages:
   displayName: 'Building Application'
   jobs:
   - job: 'Build'
-    displayname: 'Build Job'
+    displayName: 'Build Job'
 
     pool:
       name: LOCAL
@@ -28,7 +28,7 @@ stages:
 
     - task: NodeTool@0
       inputs:
-      versionSpec: '12.x'
+        versionSpec: '12.x'
 
     - task: Npm@1
       displayName: 'Run npm install'
@@ -58,7 +58,7 @@ stages:
 
     - template: templates/build.yml
       parameters:
-      buildConfiguration: 'Release'
+        buildConfiguration: 'Release'
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: drop'
