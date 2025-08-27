@@ -78,9 +78,8 @@ stages:
             inputs:
               buildType: 'current'
               artifactName: 'drop'
-              patterns: |
-                **/*.zip
-                !**/*.Tests.zip
+              itemPattern: |
+                **/*.Web.zip
           - task: AzureWebApp@1
             displayName: 'Azure App Service Deploy: website'
             inputs:
