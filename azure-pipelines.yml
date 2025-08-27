@@ -77,7 +77,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: drop
+              artifactName: 'drop'
               patterns: |
                 **/*.zip
                 !**/*.Tests.zip
