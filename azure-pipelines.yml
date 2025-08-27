@@ -80,8 +80,8 @@ stages:
               downloadType: 'single'
               artifactName: 'drop'
               itemPattern: |
-                **/*.zip
-                !**/*.Tests.zip
+                drop/**/*.zip
+                !drop/**/*.Tests.zip
           - task: AzureWebApp@1
             displayName: 'Azure App Service Deploy: website'
             inputs:
