@@ -65,7 +65,7 @@ stages:
   jobs:
   - deployment: Deploy
     pool:
-      vmImage: 'ubuntu-latest'
+      name: LOCAL
     environment: dev
     variables:
     - group: Release
