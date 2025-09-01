@@ -76,10 +76,10 @@ stages:
           steps:
           - download: current
             artifact: drop
-            inputs:
-              itemPattern: |
+            patterns: |
                 **/*.zip
                 !**/*.Tests.zip
+              cleanDestinationFolder: true
           - task: AzureWebApp@1
             displayName: 'Azure App Service Deploy: website'
             inputs:
