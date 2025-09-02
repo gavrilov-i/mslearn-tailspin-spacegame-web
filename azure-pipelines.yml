@@ -77,28 +77,9 @@ stages:
     succeeded(),
     eq(variables['Build.SourceBranchName'], variables['releaseBranchName']))
   jobs:
-  - deployment: Deploy
-    pool:
-      name: LOCAL
-    environment: dev
-    variables:
-    - group: Release
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: drop
-            patterns: |
-                **/*.zip
-                !**/*.Tests.zip
-          - task: AzureWebApp@1
-            displayName: 'Azure App Service Deploy: website'
-            inputs:
-              azureSubscription: 'ARM-Tailspin'
-              appName: '$(WebAppNameDev)'
-              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
-
+  - template: templates/deploy.yml
+    parameters:
+      WebAppName: '$(WebAppNameDev)'
 - stage: 'Test'
   displayName: 'Deploy the QA env'
   dependsOn: Dev
