@@ -10,6 +10,14 @@ variables:
   buildConfiguration: 'Release'
   releaseBranchName: 'release'
 
+schedules:
+- cron: '0 10 * * *'
+  displayName: 'Deploy every day at 10 A.M. UTC'
+  branches:
+    include:
+    - release
+  always: false 
+
 stages:
 - stage: 'Build'
   displayName: 'Building Application'
@@ -89,4 +97,34 @@ stages:
             inputs:
               azureSubscription: 'ARM-Tailspin'
               appName: '$(WebAppNameDev)'
+              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
+
+- stage: 'Test'
+  displayName: 'Deploy the QA env'
+  dependsOn: Dev
+  condition: |
+    and (
+    succeeded(),
+    eq(variables['Build.Reason'],'Schedule'))
+  jobs:
+  - deployment: Deploy
+    pool:
+      name: LOCAL
+    environment: dev
+    variables:
+    - group: Release
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop
+            patterns: |
+                **/*.zip
+                !**/*.Tests.zip
+          - task: AzureWebApp@1
+            displayName: 'Azure App Service Deploy: website to Test env'
+            inputs:
+              azureSubscription: 'ARM-Tailspin'
+              appName: '$(WebAppNameTest)'
               package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
