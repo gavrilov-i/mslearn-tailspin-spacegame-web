@@ -97,3 +97,12 @@ stages:
     parameters:
       WebAppName: '$(WebAppNameTest)'
       environment: test
+
+  - stage: 'Staging'
+  displayName: 'Deploy the Staging env'
+  dependsOn: Test
+  jobs:
+  - template: templates/deploy.yml
+    parameters:
+      WebAppName: '$(WebAppNameTest)'
+      environment: staging
