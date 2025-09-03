@@ -2,7 +2,7 @@
   - deployment: Deploy
     pool:
       name: LOCAL
-    environment: dev
+    environment: ${{ parameters.environment }}'
     strategy:
       runOnce:
         deploy:

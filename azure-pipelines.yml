@@ -83,6 +83,7 @@ stages:
   - template: templates/deploy.yml
     parameters:
       WebAppName: '$(WebAppNameDev)'
+      environment: dev
 
 - stage: 'Test'
   displayName: 'Deploy the QA env'
@@ -95,3 +96,4 @@ stages:
   - template: templates/deploy.yml
     parameters:
       WebAppName: '$(WebAppNameTest)'
+      environment: test
