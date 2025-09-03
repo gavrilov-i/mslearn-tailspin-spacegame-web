@@ -14,7 +14,7 @@ variables:
     value: 'release'
 
 schedules:
-- cron: '0 14 * * *'
+- cron: '0 15 * * *'
   displayName: 'Deploy every day at 10 A.M. UTC'
   branches:
     include:
@@ -104,5 +104,5 @@ stages:
   jobs:
   - template: templates/deploy.yml
     parameters:
-      WebAppName: '$(WebAppNameTest)'
+      WebAppName: '$(WebAppNameStaging)'
       environment: staging
