@@ -7,10 +7,9 @@ trigger:
 - "*"
 
 variables:
+- group: Release
   buildConfiguration: 'Release'
   releaseBranchName: 'release'
-#variables:
-#  - group: Release
 
 schedules:
 - cron: '0 10 * * *'
