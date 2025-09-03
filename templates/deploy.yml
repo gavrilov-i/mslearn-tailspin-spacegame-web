@@ -3,8 +3,6 @@
     pool:
       name: LOCAL
     environment: dev
-    variables:
-    - group: Release
     strategy:
       runOnce:
         deploy:
@@ -15,7 +13,7 @@
                 **/*.zip
                 !**/*.Tests.zip
           - task: AzureWebApp@1
-            displayName: 'Azure App Service Deploy: website to Test env'
+            displayName: 'Azure App Service Deployment'
             inputs:
               azureSubscription: 'ARM-Tailspin'
               appName: '${{ parameters.WebAppName }}'
