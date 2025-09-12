@@ -108,6 +108,7 @@ stages:
       environment: staging
  
   - job: 'LoadTests'
+    dependsOn: Staging
     displayName: 'Running load tests with JMeter'
     pool:
       name: LOCAL
@@ -116,8 +117,6 @@ stages:
     - script: |
         wget -c archive.apache.org/dist/jmeter/binaries/apache-jmeter-$(jmeter_version).tgz
         tar -xzf apache-jmeter-$(jmeter_version).tgz
-        sudo apt-get update
-        sudo apt-get -y install xsltproc
       displayName: 'Install Apache JMeter'
     - script: apache-jmeter-$(jmeter_version)/bin/./jmeter -n -t LoadTest.jmx -o Results.xml -Jhostname=$(STAGING_HOSTNAME) 
       displayName: 'Running tests'
