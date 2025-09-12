@@ -106,3 +106,23 @@ stages:
     parameters:
       WebAppName: '$(WebAppNameStaging)'
       environment: staging
+ 
+  - job: 'Load Tests'
+    displayName: 'Running load tests with JMeter'
+    pool:
+      name: LOCAL
+    
+    steps:
+    - script: |
+        wget -c archive.apache.org/dist/jmeter/binaries/apache-jmeter-$(jmeter_version).tgz
+        tar -xzf apache-jmeter-$(jmeter_version).tgz
+        sudo apt-get update
+        sudo apt-get -y install xsltproc
+      DisplayName: 'Install Apache JMeter'
+    - script: apache-jmeter-$(jmeter_version)/bin/./jmeter -n -t LoadTest.jmx -o Results.xml -Jhostname=$(STAGING_HOSTNAME) 
+      DisplayName: 'Running tests'
+    - script: xsltproc JMeter2JUnit.xsl Results.xml > JUnit.xml
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: JUnit
+        testResultsFiles: JUnit.xml
