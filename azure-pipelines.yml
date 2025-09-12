@@ -108,7 +108,7 @@ stages:
       environment: staging
  
   - job: 'LoadTests'
-    dependsOn: Staging
+    dependsOn: Deploy
     displayName: 'Running load tests with JMeter'
     pool:
       name: LOCAL
