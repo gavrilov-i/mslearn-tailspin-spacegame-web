@@ -107,7 +107,7 @@ stages:
       WebAppName: '$(WebAppNameStaging)'
       environment: staging
  
-  - job: 'Load Tests'
+  - job: 'LoadTests'
     displayName: 'Running load tests with JMeter'
     pool:
       name: LOCAL
