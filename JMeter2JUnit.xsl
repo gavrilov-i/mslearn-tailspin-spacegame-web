@@ -11,7 +11,7 @@
           <xsl:variable name="avg-time" select="sum($times) div count($times)" />
           <xsl:attribute name="name">Average Response Time</xsl:attribute>
           <xsl:attribute name="time"><xsl:value-of select="format-number($avg-time div 1000,'#.##')"/></xsl:attribute>
-          <xsl:if test="$avg-time > $threshold">
+          <xsl:if test="$avg-time > $threshold or number($avg-time) != number($avg-time)">
             <failure>Average response time of <xsl:value-of select="format-number($avg-time,'#.##')"/> exceeds <xsl:value-of select="$threshold"/> ms threshold.</failure>
           </xsl:if> 
       </testcase>
@@ -19,7 +19,7 @@
           <xsl:variable name="exceeds-threshold" select="count($times[. > $threshold])" />
           <xsl:attribute name="name">Max Response Time</xsl:attribute>
           <xsl:attribute name="time"><xsl:value-of select="math:max($times) div 1000"/></xsl:attribute>
-          <xsl:if test="$exceeds-threshold > count($times) * 0.1">
+          <xsl:if test="$exceeds-threshold > count($times) * 0.1 or number($exceeds-threshold) != number($exceeds-threshold) or number($times) != number($times">
             <failure><xsl:value-of select="format-number($exceeds-threshold div count($times) * 100,'#.##')"/>% of requests exceed <xsl:value-of select="$threshold"/> ms threshold.</failure>
           </xsl:if>
       </testcase>
