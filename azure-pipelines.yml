@@ -88,10 +88,10 @@ stages:
 - stage: 'Test'
   displayName: 'Deploy the QA env'
   dependsOn: Dev
-  #condition: |
-  #  and (
-  #  succeeded(),
-  #  eq(variables['Build.Reason'],'Schedule'))
+  condition: |
+    and (
+    succeeded(),
+    or (eq(variables['Build.Reason'],'Schedule'), eq(variables['Build.Reason'],'Manual')))
   jobs:
   - template: templates/deploy.yml
     parameters:
