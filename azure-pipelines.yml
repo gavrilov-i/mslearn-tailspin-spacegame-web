@@ -130,8 +130,8 @@ stages:
               azureSubscription: 'ARM-Tailspin'
               resourceGroupName: 'webapp-rg1'
               webAppName: '$(WebAppNameStaging)'
-              sourceSlot: 'tailspin-web-release-swap'
-              targetSlot: 'tailspin-web-release'
+              sourceSlot: 'swap'
+              targetSlot: 'production'
               action: 'Swap Slots'
  
   - job: 'LoadTests'
