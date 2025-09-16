@@ -11,14 +11,14 @@ variables:
   - name: buildConfiguration
     value: 'Release'
   - name: releaseBranchName
-    value: 'release'
+    value: 'blue-green'
 
 schedules:
 - cron: '0 19 * * *'
   displayName: 'Deploy every day at 10 A.M. UTC'
   branches:
     include:
-    - release
+    - blue-green
   always: false 
 
 stages:
@@ -102,10 +102,25 @@ stages:
   displayName: 'Deploy the Staging env'
   dependsOn: Test
   jobs:
-  - template: templates/deploy.yml
-    parameters:
-      WebAppName: '$(WebAppNameStaging)'
-      environment: staging
+  - deployment: Deploy
+    pool:
+      name: LOCAL
+    environment: release
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: drop
+            patterns: |
+                **/*.zip
+                !**/*.Tests.zip
+          - task: AzureWebApp@1
+            displayName: 'Azure App Service Deployment'
+            inputs:
+              azureSubscription: 'ARM-Tailspin'
+              appName: '$(WebAppNameStaging)'
+              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
  
   - job: 'LoadTests'
     dependsOn: Deploy
