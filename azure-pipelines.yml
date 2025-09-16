@@ -105,7 +105,7 @@ stages:
   - deployment: Deploy
     pool:
       name: LOCAL
-    environment: release
+    environment: staging
     strategy:
       runOnce:
         deploy:
