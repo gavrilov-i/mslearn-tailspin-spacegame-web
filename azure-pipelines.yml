@@ -119,8 +119,20 @@ stages:
             displayName: 'Azure App Service Deployment'
             inputs:
               azureSubscription: 'ARM-Tailspin'
+              deployToSlotOrASE: 'true'
+              resourceGroupName: 'webapp-rg1'
+              slotName: 'swap'
               appName: '$(WebAppNameStaging)'
               package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
+          - task: AzureAppServiceManage@0
+            displayName: 'Swap deployment slots'
+            inputs:
+              azureSubscription: 'ARM-Tailspin'
+              resourceGroupName: 'webapp-rg1'
+              webAppName: '$(WebAppNameStaging)'
+              sourceSlot: 'tailspin-web-release-swap'
+              targetSlot: 'tailspin-web-release'
+              action: 'Swap Slots'
  
   - job: 'LoadTests'
     dependsOn: Deploy
