@@ -27,9 +27,6 @@ stages:
 
     pool:
       name: LOCAL-VM
-      demands:
-        - npm
-
     steps:
     - task: Docker@2
       displayName: 'Build and push the image to container registry'
@@ -54,8 +51,6 @@ stages:
     displayName: 'Deploy Container'
     pool:
      name: LOCAL
-     demands:
-       - npm
     steps:
     - task: AzureWebAppContainer@1
       inputs:
