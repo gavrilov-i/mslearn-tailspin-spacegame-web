@@ -28,6 +28,8 @@ stages:
     pool:
       name: LOCAL-VM
     steps:
+    - task: NuGetAuthenticate@1
+
     - task: Docker@2
       displayName: 'Build and push the image to container registry'
       inputs:
@@ -36,6 +38,7 @@ stages:
         repository: $(webRepository)
         dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
         containerRegistry: 'ACR-Tailspin'
+        arguments: '--build-arg NUGET_AUTH_TOKEN=$(NuGetAuthToken)'
         tags: |
           $(tag)
     
