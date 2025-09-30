@@ -11,19 +11,16 @@ variables:
   - name: buildConfiguration
     value: 'Release'
   - name: releaseBranchName
-    value: 'release'
+    value: 'docker'
+  - name: webRepository
+    value: 'web'
+  - name: tag
+    value: '$(Build.BuildId)'
 
-schedules:
-- cron: '0 19 * * *'
-  displayName: 'Deploy every day at 10 A.M. UTC'
-  branches:
-    include:
-    - release
-  always: false 
 
 stages:
-- stage: 'Build'
-  displayName: 'Building Application'
+- stage: 'Build and Push'
+  displayName: 'Building and Push container'
   jobs:
   - job: 'Build'
     displayName: 'Build Job'
@@ -33,122 +30,37 @@ stages:
       demands:
         - npm
 
-    variables:
-      wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
-  
     steps:
-
-    - task: NodeTool@0
+    - task: Docker@2
+      displayName: 'Build and push the image to container registry'
       inputs:
-        versionSpec: '12.x'
-
-    - task: Npm@1
-      displayName: 'Run npm install'
-      inputs:
-        verbose: false
-
-    - script: npx node-sass $(wwwrootDir) --output $(wwwrootDir)
-      displayName: 'Sass'
-
-    - task: gulp@1
-      displayName: 'Gulp run'
-
-    - script: echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt
-      displayName: 'Buildinfo creation'
-      workingDirectory: $(wwwrootDir)
-
-    - task: DotNetCoreCLI@2
-      displayName: 'Restore project dependencies'
-      inputs:
-        command: 'restore'
-        vstsFeed: 'Tailspin.SpaceGame.Web.Models'
-        projects: '**/*.csproj'
-
-    - template: templates/build.yml
-      parameters:
-        buildConfiguration: $(buildConfiguration)
-
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact: drop'
-      condition: succeeded()
-
+        command: buildAndPush
+        buildContext: $(Build.Repository.LocalPath)
+        repository: $(webRepository)
+        dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
+        containerRegistry: 'ACR-Tailspin'
+        tags: |
+          $(tag)
+    
 - stage: 'Dev'
-  displayName: 'Deploy the dev env'
+  displayName: 'Deploy the dev container'
   dependsOn: Build
   condition: |
     and (
     succeeded(),
     eq(variables['Build.SourceBranchName'], variables['releaseBranchName']))
   jobs:
-  - template: templates/deploy.yml
-    parameters:
-      WebAppName: '$(WebAppNameDev)'
-      environment: dev
-
-- stage: 'Test'
-  displayName: 'Deploy the QA env'
-  dependsOn: Dev
-  condition: |
-    and (
-    succeeded(),
-    or (eq(variables['Build.Reason'],'Schedule'), eq(variables['Build.Reason'],'Manual')))
-  jobs:
-  - template: templates/deploy.yml
-    parameters:
-      WebAppName: '$(WebAppNameTest)'
-      environment: test
-
-- stage: 'Staging'
-  displayName: 'Deploy the Staging env'
-  dependsOn: Test
-  jobs:
-  - deployment: Deploy
-    pool:
+   - job: 'Deploy'
+     displayName: 'Deploy Container'
+     pool:
       name: LOCAL
-    environment: staging
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - download: current
-            artifact: drop
-            patterns: |
-                **/*.zip
-                !**/*.Tests.zip
-          - task: AzureWebApp@1
-            displayName: 'Azure App Service Deployment'
-            inputs:
-              azureSubscription: 'ARM-Tailspin'
-              deployToSlotOrASE: 'true'
-              resourceGroupName: 'webapp-rg1'
-              slotName: 'swap'
-              appName: '$(WebAppNameStaging)'
-              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/Tailspin.SpaceGame.Web.zip'
-          - task: AzureAppServiceManage@0
-            displayName: 'Swap deployment slots'
-            inputs:
-              azureSubscription: 'ARM-Tailspin'
-              resourceGroupName: 'webapp-rg1'
-              webAppName: '$(WebAppNameStaging)'
-              sourceSlot: 'swap'
-              targetSlot: 'production'
-              action: 'Swap Slots'
- 
-  - job: 'LoadTests'
-    dependsOn: Deploy
-    displayName: 'Running load tests with JMeter'
-    pool:
-      name: LOCAL
+      demands:
+        - npm
     
-    steps:
-    - script: |
-        wget -c archive.apache.org/dist/jmeter/binaries/apache-jmeter-$(jmeter_version).tgz
-        tar -xzf apache-jmeter-$(jmeter_version).tgz
-      displayName: 'Install Apache JMeter'
-    - script: apache-jmeter-$(jmeter_version)/bin/./jmeter -n -t LoadTest.jmx -o Results.xml -Jhostname=$(STAGING_HOSTNAME) 
-      displayName: 'Running tests'
-    - script: xsltproc JMeter2JUnit.xsl Results.xml > JUnit.xml
-    - task: PublishTestResults@2
-      inputs:
-        testResultsFormat: JUnit
-        testResultsFiles: JUnit.xml
+     steps:
+     - task: AzureWebAppContainer@1
+       inputs:
+       appName: $(WebAppName)
+       azureSubscription: 'ARM-Tailspin'
+       imageName: $(RegistryName)/$(webRepository):$(build.buildId)  
+
