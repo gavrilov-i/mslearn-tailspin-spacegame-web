@@ -59,7 +59,7 @@ stages:
     steps:
     - task: AzureWebAppContainer@1
       inputs:
-      appName: $(WebAppName)
-      azureSubscription: 'ARM-Tailspin'
-      imageName: $(RegistryName)/$(webRepository):$(build.buildId)  
+       appName: $(WebAppName)
+       azureSubscription: 'ARM-Tailspin'
+       imageName: $(RegistryName)/$(webRepository):$(build.buildId)  
 
