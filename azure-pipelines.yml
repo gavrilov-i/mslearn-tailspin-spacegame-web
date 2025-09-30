@@ -16,6 +16,8 @@ variables:
     value: 'web'
   - name: tag
     value: '$(Build.BuildId)'
+  - name: NuGetAuthToken
+    value: 'aaabbb'
 
 
 stages:
