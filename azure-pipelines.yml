@@ -50,17 +50,16 @@ stages:
     succeeded(),
     eq(variables['Build.SourceBranchName'], variables['releaseBranchName']))
   jobs:
-   - job: 'Deploy'
-     displayName: 'Deploy Container'
-     pool:
-      name: LOCAL
-      demands:
-        - npm
-    
-     steps:
-     - task: AzureWebAppContainer@1
-       inputs:
-       appName: $(WebAppName)
-       azureSubscription: 'ARM-Tailspin'
-       imageName: $(RegistryName)/$(webRepository):$(build.buildId)  
+  - job: 'Deploy'
+    displayName: 'Deploy Container'
+    pool:
+     name: LOCAL
+     demands:
+       - npm
+    steps:
+    - task: AzureWebAppContainer@1
+      inputs:
+      appName: $(WebAppName)
+      azureSubscription: 'ARM-Tailspin'
+      imageName: $(RegistryName)/$(webRepository):$(build.buildId)  
 
