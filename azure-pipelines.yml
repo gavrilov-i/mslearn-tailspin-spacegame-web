@@ -19,7 +19,7 @@ variables:
 
 
 stages:
-- stage: 'Build and Push'
+- stage: 'Build'
   displayName: 'Building and Push container'
   jobs:
   - job: 'Build'
