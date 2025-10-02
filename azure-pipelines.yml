@@ -16,8 +16,6 @@ variables:
     value: 'web'
   - name: tag
     value: '$(Build.BuildId)'
-  - name: NuGetAuthToken
-    value: 'aaabbb'
 
 
 stages:
@@ -31,6 +29,21 @@ stages:
       name: LOCAL-VM
     steps:
     - task: NuGetAuthenticate@1
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '12.x'
+
+    - task: Npm@1
+      displayName: 'Run npm install'
+      inputs:
+        verbose: false
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore project dependencies'
+      inputs:
+        command: 'restore'
+        vstsFeed: 'Tailspin.SpaceGame.Web.Models'
+        projects: '**/*.csproj'
 
     - task: Docker@2
       displayName: 'Build and push the image to container registry'
@@ -40,7 +53,6 @@ stages:
         repository: $(webRepository)
         dockerfile: '$(Build.SourcesDirectory)/Tailspin.SpaceGame.Web/Dockerfile'
         containerRegistry: 'ACR-Tailspin'
-        arguments: '--build-arg NUGET_AUTH_TOKEN=$(NuGetAuthToken)'
         tags: |
           $(tag)
     
