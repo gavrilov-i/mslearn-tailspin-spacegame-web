@@ -16,8 +16,7 @@ variables:
     value: 'web'
   - name: tag
     value: '$(Build.BuildId)'
-  - name: System.Debug
-    value: true
+
 
 
 stages:

@@ -9,7 +9,7 @@ WORKDIR /src
 COPY ["Tailspin.SpaceGame.Web/Tailspin.SpaceGame.Web.csproj", "Tailspin.SpaceGame.Web/"]
 RUN dotnet nuget add source "https://pkgs.dev.azure.com/sabredevlab/_packaging/Tailspin.SpaceGame.Web.Models/nuget/v3/index.json" \
         --name "MyPrivateFeed" \
-        --username "$VSS_NUGET_ACCESSTOKEN" \
+        --username "VSS_NUGET_ACCESSTOKEN" \
         --password "${FEED_ACCESSTOKEN}" \
         --store-password-in-clear-text
 RUN dotnet restore  "Tailspin.SpaceGame.Web/Tailspin.SpaceGame.Web.csproj"
