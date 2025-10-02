@@ -4,10 +4,15 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG FEED_ACCESSTOKEN
 WORKDIR /src
 COPY ["Tailspin.SpaceGame.Web/Tailspin.SpaceGame.Web.csproj", "Tailspin.SpaceGame.Web/"]
-COPY ["Tailspin.SpaceGame.Web/nuget.config", "Tailspin.SpaceGame.Web/"]
-RUN dotnet restore  "Tailspin.SpaceGame.Web/Tailspin.SpaceGame.Web.csproj" --configfile Tailspin.SpaceGame.Web/nuget.config
+RUN dotnet nuget add source "https://pkgs.dev.azure.com/sabredevlab/_packaging/Tailspin.SpaceGame.Web.Models/nuget/v3/index.json" \
+        --name "MyPrivateFeed" \
+        --username "VSS_NUGET_ACCESSTOKEN" \
+        --password "${FEED_ACCESSTOKEN}" \
+        --store-password-in-clear-text
+RUN dotnet restore  "Tailspin.SpaceGame.Web/Tailspin.SpaceGame.Web.csproj"
 COPY . .
 WORKDIR "/src/Tailspin.SpaceGame.Web"
 RUN dotnet build "Tailspin.SpaceGame.Web.csproj" -c Release -o /app/build
